@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>首页 on hivexyz</title><link>https://hivexyz.github.io/</link><description>Recent content in 首页 on hivexyz</description><generator>Hugo</generator><language>zh-cn</language><lastBuildDate>Wed, 01 Jul 2026 09:00:00 +0800</lastBuildDate><atom:link href="https://hivexyz.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Hello Hugo</title><link>https://hivexyz.github.io/posts/hello-hugo/</link><pubDate>Wed, 01 Jul 2026 09:00:00 +0800</pubDate><guid>https://hivexyz.github.io/posts/hello-hugo/</guid><description>&lt;p&gt;这是博客的第一篇文章。&lt;/p&gt;
+&lt;p&gt;当前站点特性：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;使用 Hugo 生成静态页面&lt;/li&gt;
+&lt;li&gt;使用 GitHub Actions 自动发布到 GitHub Pages&lt;/li&gt;
+&lt;li&gt;无第三方主题依赖，仓库结构简单&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;后续可以继续补充文章、归档、标签页和自定义样式。&lt;/p&gt;</description></item></channel></rss>
