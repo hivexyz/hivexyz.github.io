@@ -1,0 +1,18 @@
+{{ define "main" }}
+<section class="section-heading">
+  <div>
+    <p class="eyebrow">Archive</p>
+    <h1>{{ .Title }}</h1>
+  </div>
+</section>
+
+<section class="post-list">
+  {{ range .Pages }}
+  <article class="post-card">
+    <p class="post-meta">{{ .Date.Format "2006-01-02" }}</p>
+    <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+    {{ with .Description }}<p>{{ . }}</p>{{ end }}
+  </article>
+  {{ end }}
+</section>
+{{ end }}

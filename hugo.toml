@@ -1,0 +1,14 @@
+baseURL = "https://hivexyz.github.io/"
+languageCode = "zh-cn"
+title = "hivexyz"
+defaultContentLanguage = "zh-cn"
+
+[params]
+description = "A Hugo-powered static blog hosted on GitHub Pages."
+author = "hivexyz"
+github = "https://github.com/hivexyz/hivexyz.github.io"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
