@@ -1,11 +1,9 @@
 ---
-title: "test_img"
-date: 2026-07-14T09:00:00+08:00
+title: "Hello Hugo"
+date: 2026-07-01T09:00:00+08:00
 draft: false
-description: "博客的第一篇文章。"
+description: "img_test"
 tags: ["hugo", "github-pages"]
 ---
-
-![1784023057889](image/test_img/1784023057889.png)
-![1784023096065](image/test_img/1784023096065.png)
-这是两张噜噜的图片
+![1784032258660](images/2026q3/test_img/image.png)
+这是噜噜
