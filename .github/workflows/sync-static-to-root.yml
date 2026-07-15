@@ -1,0 +1,40 @@
+name: Sync generated site to repository root
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: 0.147.9
+          extended: true
+
+      - name: Build site
+        run: hugo --minify
+
+      - name: Sync generated files into repository root
+        run: |
+          rm -rf categories css images posts tags index.html index.xml sitemap.xml
+          cp -R public/. .
+
+      - name: Commit synced files
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: sync generated Hugo site"
+          file_pattern: "categories css images posts tags index.html index.xml sitemap.xml"

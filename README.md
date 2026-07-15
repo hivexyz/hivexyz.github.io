@@ -7,9 +7,9 @@
 这个仓库目前采用两层内容结构：
 
 - Hugo 源文件放在 `content/`、`layouts/`、`static/`
-- 生成后的静态站点文件放在仓库根目录，例如 `index.html`、`posts/`、`tags/`、`css/`
+- 生成后的静态站点文件会被自动同步到仓库根目录，例如 `index.html`、`posts/`、`tags/`、`css/`
 
-这样做的原因是：仓库既保留 Hugo 源码，方便长期维护；同时也把生成后的静态文件直接提交到仓库中，兼容 GitHub Pages 当前对该仓库的发布方式。
+这样做的原因是：仓库既保留 Hugo 源码，方便长期维护；同时也把生成后的静态文件直接提交到仓库中，兼容 GitHub Pages 仓库根目录发布和 Actions 构建发布两种模式。
 
 ### 1. 新增或修改文章
 
@@ -61,7 +61,7 @@ http://localhost:1313/
 
 ### 3. 生成静态页面
 
-修改完内容后，需要重新构建静态站点：
+修改完内容后，可以先在本地重新构建静态站点确认结果：
 
 如果本机安装了 Hugo：
 
@@ -81,9 +81,14 @@ npx hugo-cli@latest --minify
 public/
 ```
 
-### 4. 同步生成结果到仓库根目录
+### 4. 是否需要手工同步到仓库根目录
 
-当前仓库不能只改 `content/` 然后直接提交，还需要把 `public/` 里的生成结果同步到仓库根目录。执行：
+正常情况下，不需要手工同步。推送到 `main` 后：
+
+- `Deploy Hugo site to Pages` 会直接把 `public/` 发布到 GitHub Pages
+- `Sync generated site to repository root` 会把生成后的静态文件自动提交回仓库根目录
+
+只有在你想本地预览“最终提交到根目录的产物”时，才需要手工执行：
 
 ```bash
 cp -R public/* .
@@ -97,9 +102,10 @@ cp -R public/* .
 - `tags/`
 - `categories/`
 - `css/`
+- `images/`
 - `sitemap.xml`
 
-如果你只改了文章，但忘了这一步，线上站点可能不会反映最新内容。
+如果只想发布内容，直接提交源文件即可；自动 workflow 会负责构建和同步。
 
 ### 5. 提交并推送
 
@@ -107,15 +113,15 @@ cp -R public/* .
 
 ```bash
 git status
-git add content layouts static .github/workflows README.md .nojekyll index.html index.xml sitemap.xml posts tags categories css
+git add content layouts static .github/workflows README.md .nojekyll
 git commit -m "Update blog content"
 git push origin main
 ```
 
 推送后：
 
-- 仓库根目录静态文件会立刻作为 Pages 兼容产物存在
-- `.github/workflows/hugo.yml` 也会在 GitHub Actions 中重新构建并发布一次
+- `.github/workflows/hugo.yml` 会构建 `public/` 并发布到 GitHub Pages
+- `.github/workflows/sync-static-to-root.yml` 会把 `public/` 中的产物自动同步到仓库根目录
 
 ### 6. 发布后验证
 
@@ -150,8 +156,9 @@ public/posts/hello-hugo/index.html
 `本地预览正常，但线上没更新`
 
 - 检查是否已经 `git push origin main`
-- 检查是否把根目录静态文件一并提交了
-- 检查 GitHub Actions 是否执行成功
+- 检查 GitHub Actions 里的 `Deploy Hugo site to Pages` 是否成功
+- 检查 GitHub Actions 里的 `Sync generated site to repository root` 是否成功
+- 如果文章使用 page bundle 图片，确认图片和 `index.md` 在同一个目录中，例如 `content/posts/foo/index.md` 与 `content/posts/foo/image.png`
 
 `文章页 404`
 
@@ -176,12 +183,16 @@ npx hugo-cli@latest server -D
 
 ## 发布方式
 
-推送到 `main` 分支后，`.github/workflows/hugo.yml` 会自动构建并发布到 GitHub Pages。
+推送到 `main` 分支后：
+
+- `.github/workflows/hugo.yml` 会自动构建并发布到 GitHub Pages
+- `.github/workflows/sync-static-to-root.yml` 会自动把构建产物同步回仓库根目录
 
 仓库建议配置：
 
 1. GitHub 仓库 `Settings > Pages > Build and deployment` 选择 `GitHub Actions`
 2. 保持默认发布分支为 `main`
+3. 不要再手工编辑仓库根目录下的 `posts/`、`tags/`、`categories/`、`images/` 等生成文件
 
 ## 目录结构
 
