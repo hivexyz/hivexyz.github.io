@@ -51,19 +51,33 @@ content/posts/hello-hugo.md
 如果文章里要放图片，必须使用 Hugo Page Bundle，也就是给这篇文章单独建目录。这个仓库已经提供了辅助脚本：
 
 ```bash
-python scripts/create_post_dirs.py 2026q3/my-post
+python3 scripts/create_post_dirs.py 2026q3/my-post
 ```
 
-执行后会创建：
+执行后会创建目录，并自动生成一个带 front matter 的 `index.md` 模板。
+
+会创建：
 
 ```bash
 content/posts/2026q3/my-post/
+content/posts/2026q3/my-post/index.md
 ```
 
-然后在这个目录下新增：
+模板内容如下，`date` 会自动写入脚本执行时的当前时间：
+
+```md
+---
+title: ""
+date: 2026-07-15T12:00:56+0800
+draft: false
+description: ""
+tags: ["", ""]
+---
+```
+
+然后你只需要把图片放到同目录，例如：
 
 ```bash
-content/posts/2026q3/my-post/index.md
 content/posts/2026q3/my-post/image.png
 ```
 
@@ -186,8 +200,8 @@ https://hivexyz.github.io/posts/你的文章路径/
 
 以后写文章建议固定按这个顺序：
 
-1. 如果有图片，先执行 `python scripts/create_post_dirs.py 2026q3/文章名`
-2. 在新目录里写 `index.md`
+1. 如果有图片，先执行 `python3 scripts/create_post_dirs.py 2026q3/文章名`
+2. 修改脚本自动生成的 `index.md`
 3. 把图片直接放到同目录
 4. 本地运行 `hugo server -D` 或 `npx --cache /private/tmp/npm-cache hugo-cli@latest server -D`
 5. 确认页面和图片都正常
