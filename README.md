@@ -1,30 +1,88 @@
 # hivexyz.github.io
 
-这是一个基于 Hugo 的静态博客仓库，部署目标为 GitHub Pages。
+这是一个基于 Hugo 的静态博客仓库，部署到 GitHub Pages。
 
-## 更新文档流程
+当前仓库保留两类内容：
 
-这个仓库目前采用两层内容结构：
+- Hugo 源文件：`content/`、`layouts/`、`static/`
+- 生成后的静态站点：仓库根目录下的 `index.html`、`posts/`、`tags/`、`css/`、`images/`
 
-- Hugo 源文件放在 `content/`、`layouts/`、`static/`
-- 生成后的静态站点文件会被自动同步到仓库根目录，例如 `index.html`、`posts/`、`tags/`、`css/`
+推送到 `main` 后，GitHub Actions 会做两件事：
 
-这样做的原因是：仓库既保留 Hugo 源码，方便长期维护；同时也把生成后的静态文件直接提交到仓库中，兼容 GitHub Pages 仓库根目录发布和 Actions 构建发布两种模式。
+- 用 Hugo 构建 `public/` 并发布到 GitHub Pages
+- 把生成结果自动同步回仓库根目录，保证仓库里的静态文件和线上一致
 
-### 1. 新增或修改文章
+## 怎么用
 
-文章放在 `content/posts/` 目录，例如：
+### 1. 本地预览
+
+如果本机已安装 Hugo：
+
+```bash
+hugo server -D
+```
+
+如果没有安装 Hugo，可以直接用：
+
+```bash
+npx hugo-cli@latest server -D
+```
+
+如果本机 `~/.npm` 缓存权限有问题，可以改用临时缓存目录：
+
+```bash
+npx --cache /private/tmp/npm-cache hugo-cli@latest server -D
+```
+
+默认预览地址：
+
+```bash
+http://localhost:1313/
+```
+
+### 2. 新建一篇文章
+
+普通纯文本文章可以直接创建：
 
 ```bash
 content/posts/hello-hugo.md
 ```
 
-一篇文章的基本格式如下：
+如果文章里要放图片，必须使用 Hugo Page Bundle，也就是给这篇文章单独建目录。这个仓库已经提供了辅助脚本：
+
+```bash
+python scripts/create_post_dirs.py 2026q3/my-post
+```
+
+执行后会创建：
+
+```bash
+content/posts/2026q3/my-post/
+```
+
+然后在这个目录下新增：
+
+```bash
+content/posts/2026q3/my-post/index.md
+content/posts/2026q3/my-post/image.png
+```
+
+推荐文章结构如下：
+
+```text
+content/posts/2026q3/my-post/
+├── index.md
+└── image.png
+```
+
+### 3. 文章模板
+
+`index.md` 或普通 Markdown 文章可以使用下面的 front matter：
 
 ```md
 ---
 title: "文章标题"
-date: 2026-07-14T09:00:00+08:00
+date: 2026-07-15T09:00:00+08:00
 draft: false
 description: "一句话摘要"
 tags: ["tag1", "tag2"]
@@ -33,172 +91,164 @@ tags: ["tag1", "tag2"]
 正文内容写在这里。
 ```
 
-注意事项：
+注意：
 
-- `draft: false` 才会被正式发布
-- `date` 不要写成未来时间，否则 Hugo 默认不会生成该文章
-- 标签写在 `tags` 中，会自动生成标签页
+- `draft: false` 才会发布
+- `date` 不要写成未来时间，否则文章默认不会生成
+- `tags` 会自动生成标签页
 
-### 2. 本地预览
+### 4. 图片怎么写
 
-如果本机安装了 Hugo：
+如果文章使用 Page Bundle，图片要和 `index.md` 放在同一个目录，Markdown 里直接写相对路径：
 
-```bash
-hugo server -D
+```md
+![封面图](image.png)
 ```
 
-如果没有全局安装 Hugo，可以使用：
+正文里的图片会自动按文章内容区宽度缩放，在桌面端和手机端都会保持比例，不会再撑破版心。
 
-```bash
-npx hugo-cli@latest server -D
+不要写成：
+
+```md
+![封面图](/images/xxx.png)
 ```
 
-本地预览地址：
+也不要手工去改仓库根目录下 `posts/` 里的 HTML。正确做法是只维护 `content/posts/...` 里的源文件和图片。
 
-```bash
-http://localhost:1313/
-```
+### 5. 本地构建
 
-### 3. 生成静态页面
-
-修改完内容后，可以先在本地重新构建静态站点确认结果：
-
-如果本机安装了 Hugo：
+如果你想先确认最终生成结果，可以手工构建：
 
 ```bash
 hugo --minify
 ```
 
-如果没有全局安装 Hugo：
+如果没有安装 Hugo：
 
 ```bash
 npx hugo-cli@latest --minify
 ```
 
-构建结果会输出到：
+如果 npm 缓存权限有问题：
+
+```bash
+npx --cache /private/tmp/npm-cache hugo-cli@latest --minify
+```
+
+构建产物会输出到：
 
 ```bash
 public/
 ```
 
-### 4. 是否需要手工同步到仓库根目录
-
-正常情况下，不需要手工同步。推送到 `main` 后：
-
-- `Deploy Hugo site to Pages` 会直接把 `public/` 发布到 GitHub Pages
-- `Sync generated site to repository root` 会把生成后的静态文件自动提交回仓库根目录
-
-只有在你想本地预览“最终提交到根目录的产物”时，才需要手工执行：
+你可以重点检查：
 
 ```bash
-cp -R public/* .
+public/posts/
+public/posts/你的文章路径/index.html
 ```
 
-执行后，下面这些文件或目录会被更新：
+如果是带图文章，还要确认图片是否真的生成出来了，例如：
 
-- `index.html`
-- `index.xml`
-- `posts/`
-- `tags/`
-- `categories/`
-- `css/`
-- `images/`
-- `sitemap.xml`
+```bash
+public/posts/2026q3/my-post/image.png
+```
 
-如果只想发布内容，直接提交源文件即可；自动 workflow 会负责构建和同步。
+### 6. 发布
 
-### 5. 提交并推送
-
-建议按下面顺序检查和提交：
+正常发布时，不需要手工执行 `cp -R public/* .`。只需要提交源文件即可：
 
 ```bash
 git status
-git add content layouts static .github/workflows README.md .nojekyll
+git add content layouts static .github/workflows README.md .nojekyll scripts
 git commit -m "Update blog content"
 git push origin main
 ```
 
 推送后：
 
-- `.github/workflows/hugo.yml` 会构建 `public/` 并发布到 GitHub Pages
-- `.github/workflows/sync-static-to-root.yml` 会把 `public/` 中的产物自动同步到仓库根目录
+- `.github/workflows/hugo.yml` 会构建并发布 GitHub Pages
+- `.github/workflows/sync-static-to-root.yml` 会自动把生成产物提交回仓库根目录
 
-### 6. 发布后验证
+### 7. 发布后检查
 
-至少检查下面几个地址：
+至少检查这几个地址：
 
 ```bash
 https://hivexyz.github.io/
 https://hivexyz.github.io/posts/
-https://hivexyz.github.io/posts/你的文章slug/
+https://hivexyz.github.io/posts/你的文章路径/
 ```
 
-如果你不确定文章的 URL，可以看 Hugo 生成后的目录，例如：
+如果文章里有图片，再检查图片是否能打开。
+
+## 当前推荐工作流
+
+以后写文章建议固定按这个顺序：
+
+1. 如果有图片，先执行 `python scripts/create_post_dirs.py 2026q3/文章名`
+2. 在新目录里写 `index.md`
+3. 把图片直接放到同目录
+4. 本地运行 `hugo server -D` 或 `npx --cache /private/tmp/npm-cache hugo-cli@latest server -D`
+5. 确认页面和图片都正常
+6. `git add` 后提交并推送
+7. 到 GitHub Actions 检查两个 workflow 都成功
+
+## 常见问题
+
+### 本地能看到，线上图片不显示
+
+优先检查这几个点：
+
+- 图片是否和 `index.md` 在同一个目录
+- Markdown 是否写成了 `![alt](image.png)` 这种相对路径
+- 是否只提交了 `index.md`，却没提交图片文件
+- GitHub Actions 里的 `Deploy Hugo site to Pages` 是否成功
+- GitHub Actions 里的 `Sync generated site to repository root` 是否成功
+
+### 文章没有出现在首页
+
+一般是下面几个原因：
+
+- `draft: true`
+- `date` 写成未来时间
+- 文章放错目录
+
+### 想知道文章最终 URL
+
+可以直接看构建结果目录，例如：
 
 ```bash
 public/posts/
 ```
 
-或者直接查看生成文件：
+如果文件在：
 
 ```bash
-public/posts/hello-hugo/index.html
+public/posts/2026q3/my-post/index.html
 ```
 
-### 7. 常见问题
-
-`文章没有出现在首页或文章列表`
-
-- 先检查 front matter 里是否写了 `draft: false`
-- 再检查 `date` 是否是未来时间
-- 最后确认是否执行了 `hugo --minify` 和 `cp -R public/* .`
-
-`本地预览正常，但线上没更新`
-
-- 检查是否已经 `git push origin main`
-- 检查 GitHub Actions 里的 `Deploy Hugo site to Pages` 是否成功
-- 检查 GitHub Actions 里的 `Sync generated site to repository root` 是否成功
-- 如果文章使用 page bundle 图片，确认图片和 `index.md` 在同一个目录中，例如 `content/posts/foo/index.md` 与 `content/posts/foo/image.png`
-
-`文章页 404`
-
-- 通常是因为没有同步 `public/` 到仓库根目录
-- 或者文章 slug 对应的目录没有生成成功
-
-## 本地开发
-
-如果本机安装了 Hugo，可直接运行：
+那么页面地址通常就是：
 
 ```bash
-hugo server -D
+https://hivexyz.github.io/posts/2026q3/my-post/
 ```
 
-如果没有全局安装，也可以临时使用 npm 拉起：
+## 仓库配置要求
 
-```bash
-npx hugo-cli@latest server -D
-```
+GitHub 仓库里要确认：
 
-默认访问地址为 `http://localhost:1313/`。
+1. `Settings > Pages > Build and deployment` 选择 `GitHub Actions`
+2. 默认分支是 `main`
+3. 不要手工编辑仓库根目录下的 `posts/`、`tags/`、`categories/`、`images/` 等生成文件
 
-## 发布方式
+## 目录说明
 
-推送到 `main` 分支后：
-
-- `.github/workflows/hugo.yml` 会自动构建并发布到 GitHub Pages
-- `.github/workflows/sync-static-to-root.yml` 会自动把构建产物同步回仓库根目录
-
-仓库建议配置：
-
-1. GitHub 仓库 `Settings > Pages > Build and deployment` 选择 `GitHub Actions`
-2. 保持默认发布分支为 `main`
-3. 不要再手工编辑仓库根目录下的 `posts/`、`tags/`、`categories/`、`images/` 等生成文件
-
-## 目录结构
-
-- `content/`: 文章与页面内容
+- `content/`: 文章源文件
 - `layouts/`: Hugo 模板
-- `static/`: 静态资源
-- `public/`: Hugo 本地构建产物目录
-- `posts/`、`tags/`、`categories/`、`css/`: 已提交到仓库根目录的线上静态页面
-- `.github/workflows/hugo.yml`: GitHub Pages 自动部署工作流
+- `static/`: 全站静态资源
+- `scripts/create_post_dirs.py`: 创建带图片文章目录的辅助脚本
+- `public/`: 本地 Hugo 构建结果
+- `posts/`、`tags/`、`categories/`、`css/`、`images/`: 已同步到仓库根目录的生成产物
+- `.github/workflows/hugo.yml`: GitHub Pages 发布 workflow
+- `.github/workflows/sync-static-to-root.yml`: 生成产物自动同步 workflow
