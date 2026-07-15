@@ -5,5 +5,5 @@ draft: false
 description: "img_test"
 tags: ["hugo", "github-pages"]
 ---
-![1784032258660](images/2026q3/test_img/image.png)
+![image](image.png)
 这是噜噜

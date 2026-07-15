@@ -13,8 +13,8 @@ def usage() -> None:
         "Example:\n"
         "  python scripts/create_post_dirs.py 2026q3/test_img\n\n"
         "This will create:\n"
-        "  - content/posts/2026q3\n"
-        "  - static/images/2026q3/test_img"
+        "  - content/posts/2026q3/test_img  (Page Bundle directory)\n"
+        "  Place images alongside index.md inside this directory."
     )
 
 
@@ -45,16 +45,16 @@ def main() -> int:
         print(str(exc), file=sys.stderr)
         return 1
 
-    post_dir_part = slug.rsplit("/", 1)[0]
-    post_parent_dir = Path("content/posts") / post_dir_part
-    image_dir = Path("static/images") / slug
+    page_bundle_dir = Path("content/posts") / slug
 
-    post_parent_dir.mkdir(parents=True, exist_ok=True)
-    image_dir.mkdir(parents=True, exist_ok=True)
+    page_bundle_dir.mkdir(parents=True, exist_ok=True)
 
-    print("Created:")
-    print(f"  {post_parent_dir.as_posix()}")
-    print(f"  {image_dir.as_posix()}")
+    print("Created Page Bundle directory:")
+    print(f"  {page_bundle_dir.as_posix()}")
+    print(f"\nNext steps:")
+    print(f"  1. Create {page_bundle_dir.as_posix()}/index.md")
+    print(f"  2. Place images directly in {page_bundle_dir.as_posix()}/")
+    print(f"  3. Reference images in markdown as: ![alt](image.png)")
     return 0
 
 

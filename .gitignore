@@ -2,3 +2,13 @@
 public/
 resources/
 .hugo_build.lock
+
+# Hugo build output (deployed via GitHub Actions)
+/index.html
+/index.xml
+/sitemap.xml
+/posts/
+/categories/
+/tags/
+/css/
+/images/
