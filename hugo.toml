@@ -2,11 +2,31 @@ baseURL = "https://hivexyz.github.io/"
 languageCode = "zh-cn"
 title = "hivexyz"
 defaultContentLanguage = "zh-cn"
+theme = "paper"
 
 [params]
-description = "A Hugo-powered static blog hosted on GitHub Pages."
-author = "hivexyz"
-github = "https://github.com/hivexyz/hivexyz.github.io"
+  description = "A Hugo-powered static blog hosted on GitHub Pages."
+  author = "hivexyz"
+  color = "linen"
+  name = "hivexyz"
+  bio = "把内容沉淀到一个足够轻、足够稳的个人站点里。"
+  github = "hivexyz"
+  rss = true
+  mainSections = ["posts"]
+
+[menu]
+  [[menu.main]]
+    name = "Home"
+    url = "/"
+    weight = 1
+  [[menu.main]]
+    name = "Posts"
+    url = "/posts/"
+    weight = 2
+  [[menu.main]]
+    name = "GitHub"
+    url = "https://github.com/hivexyz/hivexyz.github.io"
+    weight = 3
 
 [markup]
   [markup.goldmark]
