@@ -2,17 +2,42 @@ baseURL = "https://hivexyz.github.io/"
 languageCode = "zh-cn"
 title = "hivexyz"
 defaultContentLanguage = "zh-cn"
-theme = "paper"
+theme = "PaperMod"
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
 
 [params]
   description = "A Hugo-powered static blog hosted on GitHub Pages."
   author = "hivexyz"
-  color = "linen"
-  name = "hivexyz"
-  bio = "把内容沉淀到一个足够轻、足够稳的个人站点里。"
-  github = "hivexyz"
-  rss = true
+  ShowReadingTime = true
+  ShowShareButtons = false
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  ShowToc = false
+  defaultTheme = "auto"
+  disableThemeToggle = false
+  disableSpecial1stPost = false
   mainSections = ["posts"]
+
+  [params.homeInfoParams]
+    Title = "hivexyz"
+    Content = "把内容沉淀到一个足够轻、足够稳的个人站点里。这里记录产品、技术和日常思考。可以从 [Posts](/posts/) 浏览全部文章，或直接去 [Search](/search/) 按关键词检索内容。"
+
+  [[params.socialIcons]]
+    name = "github"
+    url = "https://github.com/hivexyz"
+
+  [params.fuseOpts]
+    isCaseSensitive = false
+    shouldSort = true
+    location = 0
+    distance = 1000
+    threshold = 0.4
+    minMatchCharLength = 2
+    limit = 10
+    keys = ["title", "permalink", "summary", "content"]
 
 [menu]
   [[menu.main]]
@@ -24,9 +49,13 @@ theme = "paper"
     url = "/posts/"
     weight = 2
   [[menu.main]]
+    name = "Search"
+    url = "/search/"
+    weight = 3
+  [[menu.main]]
     name = "GitHub"
     url = "https://github.com/hivexyz/hivexyz.github.io"
-    weight = 3
+    weight = 4
 
 [markup]
   [markup.goldmark]
