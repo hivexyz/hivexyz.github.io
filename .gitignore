@@ -2,3 +2,11 @@
 public/
 resources/
 .hugo_build.lock
+
+# Hugo build output - never commit generated files
+index.html
+index.xml
+sitemap.xml
+categories/
+tags/
+css/
