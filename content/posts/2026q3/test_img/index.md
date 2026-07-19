@@ -6,4 +6,5 @@ description: "img_test"
 tags: ["hugo", "github-pages"]
 ---
 ![image](image.png)
+![1784088126752](image/index/1784088126752.png)
 这是噜噜
